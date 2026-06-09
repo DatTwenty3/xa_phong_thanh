@@ -383,8 +383,41 @@ document.addEventListener("DOMContentLoaded", () => {
   // Phát âm thanh ngay trong touchend; click chỉ mở sidebar và bỏ qua nếu vừa phát qua touch.
   let audioUnlocked = false;
   let recentTouchAudioAt = 0;
+  let recentTtsBtnTouchAt = 0;
   const TOUCH_AUDIO_GUARD_MS = 600;
   const audioUnlockProbe = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+  let currentAudio = null;
+  let currentProperties = null;
+  let hamletAudioPlayer = null;
+
+  function getHamletAudioPlayer() {
+    if (!hamletAudioPlayer) {
+      hamletAudioPlayer = new Audio();
+      hamletAudioPlayer.preload = "auto";
+    }
+    return hamletAudioPlayer;
+  }
+
+  function setTtsButtonState(state, btnEl) {
+    const btn = btnEl || document.getElementById("tts-global-btn");
+    if (!btn || btn.id !== "tts-global-btn") return;
+    const icon = btn.querySelector("i");
+    btn.classList.remove("speaking");
+    if (state === "disabled") {
+      btn.classList.add("disabled");
+      if (icon) icon.className = "fas fa-volume-xmark";
+      btn.title = "Chọn một ấp để nghe thuyết minh";
+    } else if (state === "ready") {
+      btn.classList.remove("disabled");
+      if (icon) icon.className = "fas fa-volume-high";
+      btn.title = "Bật/Tắt âm thanh thuyết minh";
+    } else if (state === "playing") {
+      btn.classList.remove("disabled");
+      btn.classList.add("speaking");
+      if (icon) icon.className = "fas fa-volume-high";
+      btn.title = "Bật/Tắt âm thanh thuyết minh";
+    }
+  }
 
   function unlockAudioContext() {
     if (audioUnlocked) return;
@@ -400,6 +433,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("touchstart", unlockAudioContext, { once: true, passive: true });
   document.addEventListener("click", unlockAudioContext, { once: true });
+
+  function speakCommuneInfo(props, buttonEl = null) {
+    if (!props) return;
+    currentProperties = props;
+
+    const ma = props.ma || "30050";
+    const audioPath = props.audio || `audio/${ma}.mp3`;
+    const activeBtn = buttonEl || document.getElementById("tts-global-btn");
+    const player = getHamletAudioPlayer();
+
+    if (currentAudio && currentAudio !== player) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+
+    currentAudio = player;
+    player.pause();
+    player.currentTime = 0;
+    player.src = audioPath;
+
+    player.onplay = () => setTtsButtonState("playing", activeBtn);
+    player.onended = () => setTtsButtonState("ready", activeBtn);
+    player.onerror = (e) => {
+      console.error("Lỗi tải/phát âm thanh thuyết minh:", e);
+      setTtsButtonState("ready", activeBtn);
+    };
+
+    unlockAudioContext();
+    player.play().catch((err) => {
+      console.warn("Trình duyệt chặn tự động phát âm thanh:", err);
+      setTtsButtonState("ready", activeBtn);
+    });
+  }
 
   function bindHamletTouchAudio(layer, getProps) {
     layer.on("touchstart", (e) => {
@@ -417,7 +483,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const props = getProps();
       if (!props) return;
-      unlockAudioContext();
       recentTouchAudioAt = Date.now();
       speakCommuneInfo(props);
     });
@@ -426,6 +491,26 @@ document.addEventListener("DOMContentLoaded", () => {
   function maybeAutoSpeakHamletAudio(props) {
     if (Date.now() - recentTouchAudioAt < TOUCH_AUDIO_GUARD_MS) return;
     speakCommuneInfo(props);
+  }
+
+  function handleTtsButtonActivate(e) {
+    if (e) e.stopPropagation();
+    const globalTtsBtn = document.getElementById("tts-global-btn");
+    if (!globalTtsBtn || globalTtsBtn.classList.contains("disabled")) return;
+
+    if (globalTtsBtn.classList.contains("speaking")) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      setTtsButtonState("ready", globalTtsBtn);
+      return;
+    }
+
+    if (currentProperties) {
+      recentTtsBtnTouchAt = Date.now();
+      speakCommuneInfo(currentProperties, globalTtsBtn);
+    }
   }
 
   function getHamletMapPadding() {
@@ -1449,15 +1534,7 @@ document.addEventListener("DOMContentLoaded", () => {
     animateValue("stat-pop", 0, parseInt(communeProperties.dan_so), 1200, 0, " người");
     animateValue("stat-density", 0, parseInt(communeProperties.so_ho), 1500, 0, " hộ");
 
-    // Disable global TTS button for the whole commune
-    const globalTtsBtn = document.getElementById("tts-global-btn");
-    if (globalTtsBtn) {
-      globalTtsBtn.classList.add("disabled");
-      globalTtsBtn.classList.remove("speaking");
-      globalTtsBtn.title = "Chọn một ấp để nghe thuyết minh";
-      const icon = globalTtsBtn.querySelector("i");
-      if (icon) icon.className = "fas fa-volume-xmark";
-    }
+    setTtsButtonState("disabled");
 
     // Clear audio name label
     const audioNameEl = document.getElementById("tts-audio-name");
@@ -1567,11 +1644,11 @@ document.addEventListener("DOMContentLoaded", () => {
     animateValue("stat-pop", 0, popVal, 1200, 0, " người");
     animateValue("stat-density", 0, hoVal, 1500, 0, " hộ");
 
-    // Enable global TTS button dynamically when selected
-    const globalTtsBtn = document.getElementById("tts-global-btn");
-    if (globalTtsBtn) {
-      globalTtsBtn.classList.remove("disabled");
-      globalTtsBtn.title = "Bật/Tắt âm thanh thuyết minh";
+    const player = getHamletAudioPlayer();
+    if (player && !player.paused && !player.ended) {
+      setTtsButtonState("playing");
+    } else {
+      setTtsButtonState("ready");
     }
 
     // Show audio file name label next to the TTS button
@@ -1615,14 +1692,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentAudio.currentTime = 0;
       currentAudio = null;
     }
-    const globalTtsBtn = document.getElementById("tts-global-btn");
-    if (globalTtsBtn) {
-      globalTtsBtn.classList.remove("speaking");
-      globalTtsBtn.classList.add("disabled");
-      globalTtsBtn.title = "Chọn một ấp để nghe thuyết minh";
-      const icon = globalTtsBtn.querySelector("i");
-      if (icon) icon.className = "fas fa-volume-xmark";
-    }
+    setTtsButtonState("disabled");
 
     // Clear audio name label
     const audioNameElClose = document.getElementById("tts-audio-name");
@@ -1910,96 +1980,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.requestAnimationFrame(step);
   }
 
-  // 8. Text-to-Speech (TTS) Voice Introduction for the Commune
-  let currentAudio = null;
-  let currentProperties = null;
-
-  function speakCommuneInfo(props, buttonEl = null) {
-    // Dừng phát âm thanh hiện tại nếu có
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      document.querySelectorAll(".tts-speech-btn, .popup-tts-btn, .sound-toggle-btn").forEach(btn => {
-        btn.classList.remove("speaking");
-        if (btn.id === "tts-global-btn") {
-          const icon = btn.querySelector("i");
-          if (icon) icon.className = "fas fa-volume-xmark";
-        }
-      });
-    }
-
-    currentProperties = props; // Lưu trữ để phát lại thủ công nếu cần
-
-    const ma = props.ma || "30050";
-    const audioPath = props.audio || `audio/${ma}.mp3`;
-    
-    currentAudio = new Audio(audioPath);
-    
-    const activeBtn = buttonEl || document.getElementById("tts-global-btn");
-
-    currentAudio.addEventListener("play", () => {
-      if (activeBtn) {
-        activeBtn.classList.add("speaking");
-        if (activeBtn.id === "tts-global-btn") {
-          const icon = activeBtn.querySelector("i");
-          if (icon) icon.className = "fas fa-volume-high";
-        }
-      }
-    });
-
-    currentAudio.addEventListener("ended", () => {
-      if (activeBtn) {
-        activeBtn.classList.remove("speaking");
-        if (activeBtn.id === "tts-global-btn") {
-          const icon = activeBtn.querySelector("i");
-          if (icon) icon.className = "fas fa-volume-xmark";
-        }
-      }
-      currentAudio = null;
-    });
-
-    currentAudio.addEventListener("error", (e) => {
-      console.error("Lỗi tải/phát âm thanh thuyết minh:", e);
-      if (activeBtn) {
-        activeBtn.classList.remove("speaking");
-        if (activeBtn.id === "tts-global-btn") {
-          const icon = activeBtn.querySelector("i");
-          if (icon) icon.className = "fas fa-volume-xmark";
-        }
-      }
-      currentAudio = null;
-    });
-
-    currentAudio.play().catch((err) => {
-      console.warn("Trình duyệt chặn tự động phát âm thanh:", err);
-      if (activeBtn) {
-        activeBtn.classList.remove("speaking");
-        if (activeBtn.id === "tts-global-btn") {
-          const icon = activeBtn.querySelector("i");
-          if (icon) icon.className = "fas fa-volume-xmark";
-        }
-      }
-    });
-  }
-
-  // Thiết lập trình bắt sự kiện click cho nút loa phát thanh điều khiển thủ công
+  // 8. Text-to-Speech (TTS) — nút loa điều khiển thủ công (touchstart cho mobile)
   const globalTtsBtn = document.getElementById("tts-global-btn");
   if (globalTtsBtn) {
+    globalTtsBtn.addEventListener("touchstart", (e) => {
+      e.stopPropagation();
+      handleTtsButtonActivate(e);
+    }, { passive: true });
     globalTtsBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (globalTtsBtn.classList.contains("disabled")) return;
-
-      if (currentAudio && !currentAudio.paused) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-        globalTtsBtn.classList.remove("speaking");
-        const icon = globalTtsBtn.querySelector("i");
-        if (icon) icon.className = "fas fa-volume-xmark";
-      } else if (currentProperties) {
-        speakCommuneInfo(currentProperties, globalTtsBtn);
-      }
+      if (Date.now() - recentTtsBtnTouchAt < 500) return;
+      handleTtsButtonActivate(e);
     });
   }
 
