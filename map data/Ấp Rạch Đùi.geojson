@@ -25,9 +25,11 @@
         "so_ho": "732",
         "sap_nhap_tu": [
           "Ấp Rạch Đùi",
-          "Ấp Xèo Cạn"
+          "ấp Xèo Cạn"
         ],
-        "audio": "audio/Ấp Rạch Đùi"
+        "audio": "audio/Ấp Rạch Đùi",
+        "dien_tich_km2": "4.29",
+        "mat_do_km2": "711.89"
       },
       "geometry": {
         "type": "MultiPolygon",

@@ -754,6 +754,24 @@ body {
   animation: pulseSpeech 1.2s infinite ease-in-out;
 }
 
+.tts-control-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tts-audio-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.8;
+  letter-spacing: 0.01em;
+}
+
 /* Glowing hint panel overlay on initial load */
 .map-hint-overlay {
   position: absolute;
@@ -872,6 +890,18 @@ path.leaflet-interactive:focus {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
   opacity: 0.85;
   pointer-events: none !important; /* Đảm bảo nhãn ấp cũ không cản trở việc click vào bản đồ/nhãn mới */
+  animation: fadeInOldLabel 0.35s ease-out both;
+}
+
+/* Hiệu ứng xuất hiện mượt mà khi nhãn ấp cũ được hiển thị */
+@keyframes fadeInOldLabel {
+  from { opacity: 0; }
+  to   { opacity: 0.85; }
+}
+
+/* Ẩn nhãn ấp cũ mặc định - chỉ hiển thị khi ấp mới tương ứng được chọn */
+.old-hamlet-label-hidden {
+  display: none !important;
 }
 
 /* Hiệu ứng di chuột (hover) trên nhãn */

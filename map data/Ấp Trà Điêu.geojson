@@ -24,9 +24,11 @@
         "dan_so": "1911",
         "so_ho": "464",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Trà Điêu"
         ],
-        "audio": "audio/Ấp Trà Điêu"
+        "audio": "audio/Ấp Trà Điêu",
+        "dien_tich_km2": "1.95",
+        "mat_do_km2": "980.0"
       },
       "geometry": {
         "type": "MultiPolygon",

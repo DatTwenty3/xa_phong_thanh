@@ -24,9 +24,11 @@
         "dan_so": "3165",
         "so_ho": "795",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Kinh Xáng"
         ],
-        "audio": "audio/Ấp Kinh Xáng"
+        "audio": "audio/Ấp Kinh Xáng",
+        "dien_tich_km2": "8.35",
+        "mat_do_km2": "379.04"
       },
       "geometry": {
         "type": "MultiPolygon",

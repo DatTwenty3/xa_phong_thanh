@@ -24,9 +24,11 @@
         "dan_so": "1770",
         "so_ho": "440",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp III"
         ],
-        "audio": "audio/Ấp 3"
+        "audio": "audio/Ấp 3",
+        "dien_tich_km2": "4.7",
+        "mat_do_km2": "376.6"
       },
       "geometry": {
         "type": "MultiPolygon",

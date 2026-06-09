@@ -27,7 +27,9 @@
           "Ấp Cây Gòn",
           "Ấp Cả Chương"
         ],
-        "audio": "audio/Ấp Cây Gòn"
+        "audio": "audio/Ấp Cây Gòn",
+        "dien_tich_km2": "5.23",
+        "mat_do_km2": "521.8"
       },
       "geometry": {
         "type": "MultiPolygon",

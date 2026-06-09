@@ -27,7 +27,9 @@
           "Ấp Mỹ Văn",
           "Ấp Vàm Đình"
         ],
-        "audio": "audio/Ấp Mỹ Văn"
+        "audio": "audio/Ấp Mỹ Văn",
+        "dien_tich_km2": "3.46",
+        "mat_do_km2": "1004.62"
       },
       "geometry": {
         "type": "MultiPolygon",

@@ -26,7 +26,9 @@
         "sap_nhap_tu": [
           "Ấp Chợ"
         ],
-        "audio": "audio/Ấp Chợ"
+        "audio": "audio/Ấp Chợ",
+        "dien_tich_km2": "8.89",
+        "mat_do_km2": "535.43"
       },
       "geometry": {
         "type": "MultiPolygon",

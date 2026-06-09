@@ -24,9 +24,11 @@
         "dan_so": "2718",
         "so_ho": "634",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Đồng Khoen"
         ],
-        "audio": "audio/Ấp Đồng Khoen"
+        "audio": "audio/Ấp Đồng Khoen",
+        "dien_tich_km2": "5.15",
+        "mat_do_km2": "527.77"
       },
       "geometry": {
         "type": "MultiPolygon",

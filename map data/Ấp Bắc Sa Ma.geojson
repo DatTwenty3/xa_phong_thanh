@@ -24,9 +24,11 @@
         "dan_so": "4196",
         "so_ho": "1016",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Bắc Sa Ma"
         ],
-        "audio": "audio/Ấp Bắc SaMa"
+        "audio": "audio/Ấp Bắc SaMa",
+        "dien_tich_km2": "7.25",
+        "mat_do_km2": "578.76"
       },
       "geometry": {
         "type": "MultiPolygon",

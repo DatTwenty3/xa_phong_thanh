@@ -20,13 +20,16 @@
         "ten": "Ấp Bà Bảy",
         "ma": "3005001",
         "loai": "Ấp",
-        "dien_tich_ha": "0",
-        "dan_so": "0",
-        "so_ho": "0",
+        "dien_tich_ha": "281.804",
+        "dan_so": "3476",
+        "so_ho": "836",
         "sap_nhap_tu": [
-          "Ấp Bà Bảy"
+          "Ấp Bà Bảy",
+          "ấp Vàm Đình"
         ],
-        "audio": "audio/Ấp Bà Bảy"
+        "audio": "audio/Ấp Bà Bảy",
+        "dien_tich_km2": "2.82",
+        "mat_do_km2": "1232.62"
       },
       "geometry": {
         "type": "MultiPolygon",

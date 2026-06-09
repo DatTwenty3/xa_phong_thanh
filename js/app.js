@@ -374,7 +374,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const hamletFeaturesByName = {};
   const hamletFeatureLayersByName = {};
   let zoomToHamletTimer = null;
-  let oldHamletLabelMarkers = [];
+  // Map of parentHamletName -> array of old hamlet label markers (hidden by default, shown on selection)
+  const oldHamletLabelsByParent = {};
   const oldHamletCenters = {};
   let connectingLinesLayerGroup = L.layerGroup().addTo(map);
 
@@ -501,7 +502,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatPopulationDensity(props) {
     const pop = parseInt(props.dan_so || 0, 10);
-    const km2 = parseFloat(String(props.dien_tich_km2 || 0).replace(",", "."));
+    let km2 = 0;
+    if (props.dien_tich_ha) {
+      km2 = parseFloat(String(props.dien_tich_ha).replace(",", ".")) / 100.0;
+    } else {
+      km2 = parseFloat(String(props.dien_tich_km2 || 0).replace(",", "."));
+    }
     const density =
       km2 > 0
         ? pop / km2
@@ -509,8 +515,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!density || Number.isNaN(density)) return "—";
     return (
       density.toLocaleString("vi-VN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
       }) + " người/km²"
     );
   }
@@ -526,6 +532,42 @@ document.addEventListener("DOMContentLoaded", () => {
       fillOpacity: 0.28,
       className: "hamlet-polygon",
     };
+  }
+
+  // --- Nhãn ấp cũ: ẩn mặc định, chỉ hiện khi chọn ấp mới tương ứng ---
+
+  function hideAllOldHamletLabels() {
+    Object.values(oldHamletLabelsByParent).forEach(markers => {
+      markers.forEach(marker => {
+        const el = marker.getElement();
+        if (el) {
+          el.classList.add("old-hamlet-label-hidden");
+        }
+      });
+    });
+  }
+
+  function showOldHamletLabelsFor(hamletName) {
+    // Ẩn hết trước
+    hideAllOldHamletLabels();
+    // Chỉ hiện nhãn của ấp mới được chọn, với hiệu ứng fade-in
+    const markers = oldHamletLabelsByParent[hamletName] || [];
+    markers.forEach(marker => {
+      const el = marker.getElement();
+      if (el) {
+        el.classList.remove("old-hamlet-label-hidden");
+        // Kích hoạt lại animation mỗi lần hiện
+        const span = el.querySelector(".old-hamlet-map-label");
+        if (span) {
+          span.style.animation = "none";
+          // Force reflow để animation chạy lại
+          void span.offsetWidth;
+          span.style.animation = "";
+        }
+      }
+    });
+    // Áp dụng scale theo zoom hiện tại cho nhãn vừa hiện
+    updateOffsetHamletLabels();
   }
 
 
@@ -558,7 +600,10 @@ document.addEventListener("DOMContentLoaded", () => {
           hudAccent.style.boxShadow = `0 0 12px ${color}`;
         }
       } else {
-        hudText.innerText = "XÃ CẦU KÈ";
+        const communeDisplayName = (communeProperties && communeProperties.ten)
+          ? ("XÃ " + String(communeProperties.ten).toLocaleUpperCase("vi-VN"))
+          : "BẢN ĐỒ XÃ";
+        hudText.innerText = communeDisplayName;
         mapHud.classList.remove("inspecting");
         if (hudAccent) {
           hudAccent.style.backgroundColor = "var(--accent-emerald)";
@@ -778,6 +823,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Đồng bộ nhãn chữ về trạng thái thường
     selectLabel(null, false);
 
+    // Ẩn toàn bộ nhãn ấp cũ khi bỏ chọn
+    hideAllOldHamletLabels();
+
     if (!prev) return;
     const feature = hamletFeaturesByName[prev];
     const pathLayer = hamletFeatureLayersByName[prev];
@@ -810,6 +858,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Đồng bộ nhãn chữ sang trạng thái được chọn
     selectLabel(hamletName, true);
+
+    // Hiện nhãn ấp cũ thuộc ấp mới vừa được chọn
+    showOldHamletLabelsFor(hamletName);
 
     const feature = hamletFeaturesByName[hamletName];
     const pathLayer = hamletFeatureLayersByName[hamletName];
@@ -850,7 +901,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const newHamletCenter = HAMLET_LABEL_CENTERS[hamletName] || pathLayer.getBounds().getCenter();
           currentHamlet.subHamlets.forEach((sub) => {
             if (sub.visible !== false && sub.showLine !== false) {
-              const oldCoords = oldHamletCenters[sub.name];
+              // Use composite key first to avoid collision when two new hamlets share a sub-hamlet name
+              const compositeKey = hamletName + "||" + sub.name;
+              const oldCoords = oldHamletCenters[compositeKey] || oldHamletCenters[sub.name];
               if (oldCoords) {
                 const polyline = L.polyline([oldCoords, newHamletCenter], {
                   color: "#ffffff",
@@ -887,10 +940,17 @@ document.addEventListener("DOMContentLoaded", () => {
         hamletColors[h.name] = h.color || "#ff4d4d";
         HAMLET_LABEL_CENTERS[h.name] = h.center;
         
-        // Pre-fill oldHamletCenters coordinates from config
+        // Pre-fill oldHamletCenters coordinates from config using composite key to avoid
+        // name collision when two different new hamlets share a sub-hamlet name.
         if (h.subHamlets) {
           h.subHamlets.forEach(sub => {
-            oldHamletCenters[sub.name] = L.latLng(sub.center[0], sub.center[1]);
+            // Composite key: parentHamletName + separator + subName
+            const compositeKey = h.name + "||" + sub.name;
+            oldHamletCenters[compositeKey] = L.latLng(sub.center[0], sub.center[1]);
+            // Also set plain key only if not already set (first-writer wins for backward compat)
+            if (!oldHamletCenters[sub.name]) {
+              oldHamletCenters[sub.name] = L.latLng(sub.center[0], sub.center[1]);
+            }
           });
         }
       });
@@ -898,13 +958,13 @@ document.addEventListener("DOMContentLoaded", () => {
       manualOldHamlets = config.manualOldHamlets || [];
       mergedHamletSources = config.mergedHamletSources || {};
       communeProperties = config.communeProperties || {
-        ten: config.commune_name || "Cầu Kè",
+        ten: config.commune_name || "",
         loai: "Xã",
         cap: "2",
-        dien_tich_km2: "54.12",
-        dan_so: "35491",
-        so_ho: "8399",
-        mat_do_km2: "655.78"
+        dien_tich_km2: "0",
+        dan_so: "0",
+        so_ho: "0",
+        mat_do_km2: "0"
       };
 
       // Set map default center & zoom
@@ -1022,11 +1082,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
               oldHamletCenters[name] = offsetLatlng;
 
+              // Also update composite key entries for all parent hamlets that own this old hamlet
+              config.hamlets.forEach(h => {
+                if (h.subHamlets && h.subHamlets.some(sh => sh.name === name)) {
+                  const compositeKey = h.name + "||" + name;
+                  oldHamletCenters[compositeKey] = offsetLatlng;
+                }
+              });
+
               if (isVisible) {
                 const labelText = `${formatHamletName(name)} (ẤP CŨ)`;
                 const marker = L.marker(offsetLatlng, {
                   icon: L.divIcon({
-                    className: "hamlet-map-label-icon",
+                    className: "hamlet-map-label-icon old-hamlet-label-hidden",
                     html: `<span class="hamlet-map-label old-hamlet-map-label">${labelText}</span>`,
                   }),
                   interactive: false,
@@ -1034,7 +1102,13 @@ document.addEventListener("DOMContentLoaded", () => {
                   zIndexOffset: 500
                 }).addTo(hamletLabelsLayerGroup);
 
-                oldHamletLabelMarkers.push(marker);
+                // Lưu marker theo cha mẹ (mỗi ấp cũ có thể thuộc nhiều ấp mới khác nhau)
+                config.hamlets.forEach(h => {
+                  if (h.subHamlets && h.subHamlets.some(sh => sh.name === name)) {
+                    if (!oldHamletLabelsByParent[h.name]) oldHamletLabelsByParent[h.name] = [];
+                    oldHamletLabelsByParent[h.name].push(marker);
+                  }
+                });
               }
             }
           })
@@ -1057,6 +1131,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const latlng = L.latLng(item.coords[0], item.coords[1]);
         oldHamletCenters[item.name] = latlng;
 
+        // Also update composite key entries for all parent hamlets that own this old hamlet
+        config.hamlets.forEach(h => {
+          if (h.subHamlets && h.subHamlets.some(sh => sh.name === item.name)) {
+            const compositeKey = h.name + "||" + item.name;
+            oldHamletCenters[compositeKey] = latlng;
+          }
+        });
+
         if (isVisible) {
           let displayName = item.name;
           if (displayName.includes("(cũ)")) {
@@ -1065,7 +1147,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const labelText = `${formatHamletName(displayName)} (ẤP CŨ)`;
           const marker = L.marker(latlng, {
             icon: L.divIcon({
-              className: "hamlet-map-label-icon",
+              className: "hamlet-map-label-icon old-hamlet-label-hidden",
               html: `<span class="hamlet-map-label old-hamlet-map-label">${labelText}</span>`,
             }),
             interactive: false,
@@ -1073,7 +1155,13 @@ document.addEventListener("DOMContentLoaded", () => {
             zIndexOffset: 500
           }).addTo(hamletLabelsLayerGroup);
 
-          oldHamletLabelMarkers.push(marker);
+          // Lưu marker theo cha mẹ
+          config.hamlets.forEach(h => {
+            if (h.subHamlets && h.subHamlets.some(sh => sh.name === item.name)) {
+              if (!oldHamletLabelsByParent[h.name]) oldHamletLabelsByParent[h.name] = [];
+              oldHamletLabelsByParent[h.name].push(marker);
+            }
+          });
         }
       });
 
@@ -1146,11 +1234,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Tự động thu phóng/ẩn nhãn ấp cũ theo mức độ zoom (kích thước bằng nhãn mới)
-    oldHamletLabelMarkers.forEach((marker) => {
+    // Tự động thu phóng nhãn ấp cũ theo mức độ zoom — chỉ áp dụng cho nhãn đang hiển thị
+    const allOldMarkers = Object.values(oldHamletLabelsByParent).flat();
+    allOldMarkers.forEach((marker) => {
       if (!marker) return;
       const element = marker.getElement();
       if (!element) return;
+      // Bỏ qua nhãn đang bị ẩn
+      if (element.classList.contains("old-hamlet-label-hidden")) return;
       const span = element.querySelector(".old-hamlet-map-label");
       if (!span) return;
 
@@ -1275,7 +1366,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (backBtn) backBtn.style.display = "none";
 
     // Header updates
-    document.getElementById("commune-name").innerText = "XÃ CẦU KÈ";
+    const communeNameDisplay = communeProperties && communeProperties.ten
+      ? ("XÃ " + String(communeProperties.ten).toLocaleUpperCase("vi-VN"))
+      : "BẢNG THÔNG TIN XÃ";
+    document.getElementById("commune-name").innerText = communeNameDisplay;
     document.getElementById("commune-badge-text").innerText = "Đơn vị cấp Xã";
     
     // Style badge for Commune
@@ -1312,6 +1406,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (icon) icon.className = "fas fa-volume-xmark";
     }
 
+    // Clear audio name label
+    const audioNameEl = document.getElementById("tts-audio-name");
+    if (audioNameEl) {
+      audioNameEl.textContent = "";
+      audioNameEl.style.display = "none";
+    }
+
     // Admin table updates
     document.getElementById("info-type").innerText = "Xã";
     document.getElementById("info-level").innerText = "Cấp 2";
@@ -1333,7 +1434,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const mergerContainer = document.getElementById("info-merger");
     if (mergerContainer) {
       mergerContainer.innerHTML = "";
-      hamletNames.forEach((hName) => {
+      // Sắp xếp A-Z theo bảng chữ cái tiếng Việt trước khi hiển thị
+      const sortedHamletNames = [...hamletNames].sort((a, b) =>
+        a.localeCompare(b, "vi-VN", { sensitivity: "base" })
+      );
+      sortedHamletNames.forEach((hName) => {
         const tag = document.createElement("span");
         tag.className = "merger-tag";
         tag.style.cursor = "pointer";
@@ -1416,6 +1521,16 @@ document.addEventListener("DOMContentLoaded", () => {
       globalTtsBtn.title = "Bật/Tắt âm thanh thuyết minh";
     }
 
+    // Show audio file name label next to the TTS button
+    const audioNameEl = document.getElementById("tts-audio-name");
+    if (audioNameEl) {
+      const rawAudio = props.audio || `audio/${props.ma || ""}.mp3`;
+      // Extract just the filename portion
+      const audioFilename = rawAudio.split("/").pop();
+      audioNameEl.textContent = audioFilename;
+      audioNameEl.style.display = "inline";
+    }
+
     // Admin table updates
     document.getElementById("info-type").innerText = "Ấp";
     document.getElementById("info-level").innerText = "Cấp 3";
@@ -1454,6 +1569,13 @@ document.addEventListener("DOMContentLoaded", () => {
       globalTtsBtn.title = "Chọn một ấp để nghe thuyết minh";
       const icon = globalTtsBtn.querySelector("i");
       if (icon) icon.className = "fas fa-volume-xmark";
+    }
+
+    // Clear audio name label
+    const audioNameElClose = document.getElementById("tts-audio-name");
+    if (audioNameElClose) {
+      audioNameElClose.textContent = "";
+      audioNameElClose.style.display = "none";
     }
 
     map.closePopup();

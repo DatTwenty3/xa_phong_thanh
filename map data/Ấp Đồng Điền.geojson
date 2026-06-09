@@ -27,7 +27,9 @@
           "Ấp Đồng Điền",
           "Ấp Xèo Cạn"
         ],
-        "audio": "audio/Ấp Đồng Điền"
+        "audio": "audio/Ấp Đồng Điền",
+        "dien_tich_km2": "3.13",
+        "mat_do_km2": "975.72"
       },
       "geometry": {
         "type": "MultiPolygon",

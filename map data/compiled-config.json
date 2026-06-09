@@ -3,7 +3,7 @@
   "commune_name": "Phong Thạnh",
   "company_name": "CÔNG TY ÂU LẠC",
   "year": "2026",
-  "month": "5",
+  "month": "6",
   "defaultCenter": [
     9.8773,
     106.0793
@@ -14,10 +14,10 @@
     "ten": "Phong Thạnh",
     "loai": "Xã",
     "cap": "2",
-    "dien_tich_km2": "74.72",
-    "dan_so": "40862",
-    "so_ho": "9847",
-    "mat_do_km2": "546.87"
+    "dien_tich_km2": "77.54",
+    "dan_so": "44338",
+    "so_ho": "10683",
+    "mat_do_km2": "571.81"
   },
   "hamlets": [
     {
@@ -25,8 +25,8 @@
       "ma": "3005001",
       "file": "Ấp Bà Bảy.geojson",
       "center": [
-        9.79513,
-        106.06682
+        9.794916367894556,
+        106.067161469747
       ],
       "color": "#ff4d4d",
       "audio": "audio/Ấp Bà Bảy",
@@ -34,14 +34,36 @@
         "ten": "Ấp Bà Bảy",
         "ma": "3005001",
         "loai": "Ấp",
-        "dien_tich_ha": "0",
-        "dan_so": "0",
-        "so_ho": "0",
+        "dien_tich_ha": "281.804",
+        "dan_so": "3476",
+        "so_ho": "836",
         "sap_nhap_tu": [
-          "Ấp Bà Bảy"
-        ]
+          "Ấp Bà Bảy",
+          "ấp Vàm Đình"
+        ],
+        "dien_tich_km2": "2.82",
+        "mat_do_km2": "1233.48"
       },
-      "subHamlets": []
+      "subHamlets": [
+        {
+          "name": "Ấp Bà Bảy",
+          "center": [
+            9.78857284221587,
+            106.07205393187968
+          ],
+          "visible": true,
+          "showLine": true
+        },
+        {
+          "name": "ấp Vàm Đình",
+          "center": [
+            9.800075679373647,
+            106.0626121497451
+          ],
+          "visible": true,
+          "showLine": true
+        }
+      ]
     },
     {
       "name": "Ấp Bắc Sa Ma",
@@ -61,20 +83,10 @@
         "dan_so": "4196",
         "so_ho": "1016",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Bắc Sa Ma"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.84515280231768,
-            106.12950053405763
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp Cây Gòn",
@@ -102,20 +114,20 @@
         {
           "name": "Ấp Cây Gòn",
           "center": [
-            9.84955,
-            106.15867999999999
+            9.843207762509483,
+            106.15230727379172
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         },
         {
           "name": "Ấp Cả Chương",
           "center": [
-            9.851544989973208,
-            106.15682147440333
+            9.857161055117084,
+            106.1597721052763
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         }
       ]
     },
@@ -168,20 +180,20 @@
         {
           "name": "Ấp Đồng Điền",
           "center": [
-            9.789,
-            106.09886
+            9.792886452865366,
+            106.09256909203413
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         },
         {
           "name": "Ấp Xèo Cạn",
           "center": [
-            9.790994989973207,
-            106.09700147440334
+            9.783159604483957,
+            106.09848937752831
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         }
       ]
     },
@@ -203,20 +215,10 @@
         "dan_so": "2718",
         "so_ho": "634",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Đồng Khoen"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.80439,
-            106.11112999999999
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp II",
@@ -236,20 +238,10 @@
         "dan_so": "2224",
         "so_ho": "564",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp II"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.82942,
-            106.08865
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp III",
@@ -269,20 +261,10 @@
         "dan_so": "1770",
         "so_ho": "440",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp III"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.81961,
-            106.07911999999999
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp Kinh Xáng",
@@ -302,20 +284,10 @@
         "dan_so": "3165",
         "so_ho": "795",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Kinh Xáng"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.84811,
-            106.10418
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp Mỹ Văn",
@@ -343,20 +315,20 @@
         {
           "name": "Ấp Mỹ Văn",
           "center": [
-            9.80456,
-            106.07757
+            9.801259772326974,
+            106.08072197345574
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         },
         {
           "name": "Ấp Vàm Đình",
           "center": [
-            9.806554989973208,
-            106.07571147440333
+            9.808364241254532,
+            106.06922321250221
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         }
       ]
     },
@@ -365,8 +337,8 @@
       "ma": "3005013",
       "file": "Ấp Ô Phèn.geojson",
       "center": [
-        9.86393,
-        106.13428
+        9.859359701943527,
+        106.13762767475991
       ],
       "color": "#f43f5e",
       "audio": "audio/Ấp Ô Phèn",
@@ -386,20 +358,20 @@
         {
           "name": "Ấp Ô Phèn",
           "center": [
-            9.86393,
-            106.13628
+            9.86324957963713,
+            106.13127839386861
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         },
         {
           "name": "Ấp Xóm Giữa",
           "center": [
-            9.865924989973207,
-            106.13442147440334
+            9.85437044380296,
+            106.1439775200986
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         }
       ]
     },
@@ -408,8 +380,8 @@
       "ma": "3005014",
       "file": "Ấp Rạch Đùi.geojson",
       "center": [
-        9.77483,
-        106.08823
+        9.772671205465961,
+        106.09213725182202
       ],
       "color": "#fa97d8",
       "audio": "audio/Ấp Rạch Đùi",
@@ -422,27 +394,27 @@
         "so_ho": "732",
         "sap_nhap_tu": [
           "Ấp Rạch Đùi",
-          "Ấp Xèo Cạn"
+          "ấp Xèo Cạn"
         ]
       },
       "subHamlets": [
         {
           "name": "Ấp Rạch Đùi",
           "center": [
-            9.77483,
-            106.09022999999999
+            9.77884586752722,
+            106.08561637728748
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         },
         {
-          "name": "Ấp Xèo Cạn",
+          "name": "ấp Xèo Cạn",
           "center": [
-            9.776824989973207,
-            106.08837147440333
+            9.76590432089657,
+            106.10149038103104
           ],
-          "visible": false,
-          "showLine": false
+          "visible": true,
+          "showLine": true
         }
       ]
     },
@@ -464,20 +436,10 @@
         "dan_so": "1911",
         "so_ho": "464",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp Trà Điêu"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.81724,
-            106.06367
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp I",
@@ -497,20 +459,10 @@
         "dan_so": "1761",
         "so_ho": "422",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp I"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.83568,
-            106.09594
-          ],
-          "visible": false,
-          "showLine": false
-        }
-      ]
+      "subHamlets": []
     },
     {
       "name": "Ấp IV",
@@ -530,157 +482,115 @@
         "dan_so": "3008",
         "so_ho": "715",
         "sap_nhap_tu": [
-          "Giữ nguyên"
+          "Ấp IV"
         ]
       },
-      "subHamlets": [
-        {
-          "name": "Giữ nguyên",
-          "center": [
-            9.81445,
-            106.10186
-          ],
-          "visible": false,
-          "showLine": false
-        }
+      "subHamlets": []
+    }
+  ],
+  "oldHamlets": [
+    {
+      "name": "ranh_ap_cu",
+      "file": "ranh_ap_cu.geojson",
+      "center": [
+        9.77951824967076,
+        106.10259863711394
       ]
     }
   ],
-  "oldHamlets": [],
   "manualOldHamlets": [
     {
-      "name": "Giữ nguyên",
+      "name": "Ấp Bà Bảy",
       "coords": [
-        9.84515280231768,
-        106.12950053405763
+        9.78857284221587,
+        106.07205393187968
+      ]
+    },
+    {
+      "name": "ấp Vàm Đình",
+      "coords": [
+        9.800075679373647,
+        106.0626121497451
       ]
     },
     {
       "name": "Ấp Cây Gòn",
       "coords": [
-        9.84955,
-        106.15867999999999
+        9.843207762509483,
+        106.15230727379172
       ]
     },
     {
       "name": "Ấp Cả Chương",
       "coords": [
-        9.851544989973208,
-        106.15682147440333
+        9.857161055117084,
+        106.1597721052763
       ]
     },
     {
       "name": "Ấp Đồng Điền",
       "coords": [
-        9.789,
-        106.09886
+        9.792886452865366,
+        106.09256909203413
       ]
     },
     {
       "name": "Ấp Xèo Cạn",
       "coords": [
-        9.790994989973207,
-        106.09700147440334
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.80439,
-        106.11112999999999
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.82942,
-        106.08865
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.81961,
-        106.07911999999999
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.84811,
-        106.10418
+        9.783159604483957,
+        106.09848937752831
       ]
     },
     {
       "name": "Ấp Mỹ Văn",
       "coords": [
-        9.80456,
-        106.07757
+        9.801259772326974,
+        106.08072197345574
       ]
     },
     {
       "name": "Ấp Vàm Đình",
       "coords": [
-        9.806554989973208,
-        106.07571147440333
+        9.808364241254532,
+        106.06922321250221
       ]
     },
     {
       "name": "Ấp Ô Phèn",
       "coords": [
-        9.86393,
-        106.13628
+        9.86324957963713,
+        106.13127839386861
       ]
     },
     {
       "name": "Ấp Xóm Giữa",
       "coords": [
-        9.865924989973207,
-        106.13442147440334
+        9.85437044380296,
+        106.1439775200986
       ]
     },
     {
       "name": "Ấp Rạch Đùi",
       "coords": [
-        9.77483,
-        106.09022999999999
+        9.77884586752722,
+        106.08561637728748
       ]
     },
     {
-      "name": "Ấp Xèo Cạn",
+      "name": "ấp Xèo Cạn",
       "coords": [
-        9.776824989973207,
-        106.08837147440333
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.81724,
-        106.06367
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.83568,
-        106.09594
-      ]
-    },
-    {
-      "name": "Giữ nguyên",
-      "coords": [
-        9.81445,
-        106.10186
+        9.76590432089657,
+        106.10149038103104
       ]
     }
   ],
   "mergedHamletSources": {
     "Ấp Bà Bảy": [
-      "Ấp Bà Bảy"
+      "Ấp Bà Bảy",
+      "ấp Vàm Đình"
     ],
     "Ấp Bắc Sa Ma": [
-      "Giữ nguyên"
+      "Ấp Bắc Sa Ma"
     ],
     "Ấp Cây Gòn": [
       "Ấp Cây Gòn",
@@ -694,16 +604,16 @@
       "Ấp Xèo Cạn"
     ],
     "Ấp Đồng Khoen": [
-      "Giữ nguyên"
+      "Ấp Đồng Khoen"
     ],
     "Ấp II": [
-      "Giữ nguyên"
+      "Ấp II"
     ],
     "Ấp III": [
-      "Giữ nguyên"
+      "Ấp III"
     ],
     "Ấp Kinh Xáng": [
-      "Giữ nguyên"
+      "Ấp Kinh Xáng"
     ],
     "Ấp Mỹ Văn": [
       "Ấp Mỹ Văn",
@@ -715,16 +625,16 @@
     ],
     "Ấp Rạch Đùi": [
       "Ấp Rạch Đùi",
-      "Ấp Xèo Cạn"
+      "ấp Xèo Cạn"
     ],
     "Ấp Trà Điêu": [
-      "Giữ nguyên"
+      "Ấp Trà Điêu"
     ],
     "Ấp I": [
-      "Giữ nguyên"
+      "Ấp I"
     ],
     "Ấp IV": [
-      "Giữ nguyên"
+      "Ấp IV"
     ]
   }
 }

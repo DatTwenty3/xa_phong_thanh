@@ -27,7 +27,9 @@
           "Ấp Ô Phèn",
           "Ấp Xóm Giữa"
         ],
-        "audio": "audio/Ấp Ô Phèn"
+        "audio": "audio/Ấp Ô Phèn",
+        "dien_tich_km2": "6.5",
+        "mat_do_km2": "467.08"
       },
       "geometry": {
         "type": "MultiPolygon",
