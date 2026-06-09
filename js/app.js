@@ -379,6 +379,55 @@ document.addEventListener("DOMContentLoaded", () => {
   const oldHamletCenters = {};
   let connectingLinesLayerGroup = L.layerGroup().addTo(map);
 
+  // Mobile: Leaflet click bị trì hoãn sau touchend → mất user-gesture, audio.play() bị chặn.
+  // Phát âm thanh ngay trong touchend; click chỉ mở sidebar và bỏ qua nếu vừa phát qua touch.
+  let audioUnlocked = false;
+  let recentTouchAudioAt = 0;
+  const TOUCH_AUDIO_GUARD_MS = 600;
+  const audioUnlockProbe = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+
+  function unlockAudioContext() {
+    if (audioUnlocked) return;
+    audioUnlockProbe.volume = 0.01;
+    audioUnlockProbe.play()
+      .then(() => {
+        audioUnlockProbe.pause();
+        audioUnlockProbe.currentTime = 0;
+        audioUnlocked = true;
+      })
+      .catch(() => {});
+  }
+
+  document.addEventListener("touchstart", unlockAudioContext, { once: true, passive: true });
+  document.addEventListener("click", unlockAudioContext, { once: true });
+
+  function bindHamletTouchAudio(layer, getProps) {
+    layer.on("touchstart", (e) => {
+      const touch = e.originalEvent.touches[0];
+      if (touch) e._tapStart = { x: touch.clientX, y: touch.clientY };
+    }, { passive: true });
+
+    layer.on("touchend", (e) => {
+      const touch = e.originalEvent.changedTouches[0];
+      const start = e._tapStart;
+      if (start && touch) {
+        const dx = Math.abs(touch.clientX - start.x);
+        const dy = Math.abs(touch.clientY - start.y);
+        if (dx > 10 || dy > 10) return;
+      }
+      const props = getProps();
+      if (!props) return;
+      unlockAudioContext();
+      recentTouchAudioAt = Date.now();
+      speakCommuneInfo(props);
+    });
+  }
+
+  function maybeAutoSpeakHamletAudio(props) {
+    if (Date.now() - recentTouchAudioAt < TOUCH_AUDIO_GUARD_MS) return;
+    speakCommuneInfo(props);
+  }
+
   function getHamletMapPadding() {
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
@@ -678,6 +727,8 @@ document.addEventListener("DOMContentLoaded", () => {
         scheduleZoomToHamlet(hamletName);
       }
     });
+
+    bindHamletTouchAudio(marker, () => hamletFeaturesByName[hamletName]?.properties);
 
     hamletLabelMarkersByName[hamletName] = marker;
     return marker;
@@ -1021,6 +1072,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   openHamletSidebar(feature.properties);
                   scheduleZoomToHamlet(hamletName);
                 });
+
+                bindHamletTouchAudio(featureLayer, () => feature.properties);
               },
             });
             layer.addTo(hamletsLayerGroup);
@@ -1548,7 +1601,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderMergerTags(mergerContainer, props);
     }
 
-    speakCommuneInfo(props);
+    maybeAutoSpeakHamletAudio(props);
     updateSidebarToggleButton();
   }
 
