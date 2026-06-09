@@ -379,24 +379,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const oldHamletCenters = {};
   let connectingLinesLayerGroup = L.layerGroup().addTo(map);
 
-  // Mobile: Leaflet click bị trì hoãn sau touchend → mất user-gesture, audio.play() bị chặn.
-  // Phát âm thanh ngay trong touchend; click chỉ mở sidebar và bỏ qua nếu vừa phát qua touch.
-  let audioUnlocked = false;
-  let recentTouchAudioAt = 0;
-  let recentTtsBtnTouchAt = 0;
-  const TOUCH_AUDIO_GUARD_MS = 600;
-  const audioUnlockProbe = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+  // Audio thuyết minh ấp — theo phương án xa_dai_an: new Audio(audio/{ma}.mp3) khi click chọn ấp
   let currentAudio = null;
   let currentProperties = null;
-  let hamletAudioPlayer = null;
-
-  function getHamletAudioPlayer() {
-    if (!hamletAudioPlayer) {
-      hamletAudioPlayer = new Audio();
-      hamletAudioPlayer.preload = "auto";
-    }
-    return hamletAudioPlayer;
-  }
 
   function setTtsButtonState(state, btnEl) {
     const btn = btnEl || document.getElementById("tts-global-btn");
@@ -419,98 +404,88 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function unlockAudioContext() {
-    if (audioUnlocked) return;
-    audioUnlockProbe.volume = 0.01;
-    audioUnlockProbe.play()
-      .then(() => {
-        audioUnlockProbe.pause();
-        audioUnlockProbe.currentTime = 0;
-        audioUnlocked = true;
-      })
-      .catch(() => {});
+  function normalizeAudioFilename(filename) {
+    if (!filename) return filename;
+    const base = String(filename).trim().split("/").pop();
+    return base.toLowerCase().endsWith(".mp3") ? base : `${base}.mp3`;
   }
 
-  document.addEventListener("touchstart", unlockAudioContext, { once: true, passive: true });
-  document.addEventListener("click", unlockAudioContext, { once: true });
+  function normalizeAudioPath(path) {
+    if (!path) return path;
+    const name = path.startsWith("audio/") ? path.slice(6) : path;
+    return `audio/${normalizeAudioFilename(name)}`;
+  }
+
+  function getAudioPathCandidates(audioPath) {
+    const normalized = normalizeAudioPath(audioPath);
+    const candidates = [normalized];
+    if (normalized.endsWith(".mp3")) {
+      candidates.push(normalized.slice(0, -4));
+    }
+    return [...new Set(candidates)];
+  }
+
+  function resolveHamletAudioPath(props) {
+    if (!props) return null;
+    if (props.audio) return normalizeAudioPath(props.audio);
+    if (props.ma) return normalizeAudioPath(`audio/${props.ma}`);
+    if (props.ten && globalConfig?.hamlets) {
+      const h = globalConfig.hamlets.find((x) => x.name === props.ten);
+      if (h?.audio) return normalizeAudioPath(h.audio);
+      if (h?.ma) return normalizeAudioPath(`audio/${h.ma}`);
+    }
+    return normalizeAudioPath(`audio/${props.ma || "30050"}`);
+  }
 
   function speakCommuneInfo(props, buttonEl = null) {
-    if (!props) return;
-    currentProperties = props;
-
-    const ma = props.ma || "30050";
-    const audioPath = props.audio || `audio/${ma}.mp3`;
-    const activeBtn = buttonEl || document.getElementById("tts-global-btn");
-    const player = getHamletAudioPlayer();
-
-    if (currentAudio && currentAudio !== player) {
+    if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
+      currentAudio = null;
+      setTtsButtonState("ready");
     }
 
-    currentAudio = player;
-    player.pause();
-    player.currentTime = 0;
-    player.src = audioPath;
+    currentProperties = props;
+    const audioPath = resolveHamletAudioPath(props);
+    if (!audioPath) return;
 
-    player.onplay = () => setTtsButtonState("playing", activeBtn);
-    player.onended = () => setTtsButtonState("ready", activeBtn);
-    player.onerror = (e) => {
-      console.error("Lỗi tải/phát âm thanh thuyết minh:", e);
-      setTtsButtonState("ready", activeBtn);
+    const activeBtn = buttonEl || document.getElementById("tts-global-btn");
+    const candidates = getAudioPathCandidates(audioPath);
+    let candidateIndex = 0;
+
+    const tryPlayCandidate = () => {
+      if (candidateIndex >= candidates.length) {
+        console.error("Lỗi tải/phát âm thanh thuyết minh:", audioPath);
+        setTtsButtonState("ready", activeBtn);
+        currentAudio = null;
+        return;
+      }
+
+      const path = candidates[candidateIndex++];
+      const player = new Audio(path);
+      currentAudio = player;
+
+      player.addEventListener("play", () => {
+        setTtsButtonState("playing", activeBtn);
+      });
+
+      player.addEventListener("ended", () => {
+        setTtsButtonState("ready", activeBtn);
+        currentAudio = null;
+      });
+
+      player.addEventListener("error", () => {
+        player.pause();
+        tryPlayCandidate();
+      });
+
+      player.play().catch(() => {
+        player.pause();
+        tryPlayCandidate();
+      });
     };
 
-    unlockAudioContext();
-    player.play().catch((err) => {
-      console.warn("Trình duyệt chặn tự động phát âm thanh:", err);
-      setTtsButtonState("ready", activeBtn);
-    });
-  }
-
-  function bindHamletTouchAudio(layer, getProps) {
-    layer.on("touchstart", (e) => {
-      const touch = e.originalEvent.touches[0];
-      if (touch) e._tapStart = { x: touch.clientX, y: touch.clientY };
-    }, { passive: true });
-
-    layer.on("touchend", (e) => {
-      const touch = e.originalEvent.changedTouches[0];
-      const start = e._tapStart;
-      if (start && touch) {
-        const dx = Math.abs(touch.clientX - start.x);
-        const dy = Math.abs(touch.clientY - start.y);
-        if (dx > 10 || dy > 10) return;
-      }
-      const props = getProps();
-      if (!props) return;
-      recentTouchAudioAt = Date.now();
-      speakCommuneInfo(props);
-    });
-  }
-
-  function maybeAutoSpeakHamletAudio(props) {
-    if (Date.now() - recentTouchAudioAt < TOUCH_AUDIO_GUARD_MS) return;
-    speakCommuneInfo(props);
-  }
-
-  function handleTtsButtonActivate(e) {
-    if (e) e.stopPropagation();
-    const globalTtsBtn = document.getElementById("tts-global-btn");
-    if (!globalTtsBtn || globalTtsBtn.classList.contains("disabled")) return;
-
-    if (globalTtsBtn.classList.contains("speaking")) {
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }
-      setTtsButtonState("ready", globalTtsBtn);
-      return;
-    }
-
-    if (currentProperties) {
-      recentTtsBtnTouchAt = Date.now();
-      speakCommuneInfo(currentProperties, globalTtsBtn);
-    }
+    tryPlayCandidate();
   }
 
   function getHamletMapPadding() {
@@ -812,8 +787,6 @@ document.addEventListener("DOMContentLoaded", () => {
         scheduleZoomToHamlet(hamletName);
       }
     });
-
-    bindHamletTouchAudio(marker, () => hamletFeaturesByName[hamletName]?.properties);
 
     hamletLabelMarkersByName[hamletName] = marker;
     return marker;
@@ -1123,10 +1096,15 @@ document.addEventListener("DOMContentLoaded", () => {
               pane: "newHamletsPane",
               style: getHamletStyle,
               onEachFeature: (feature, featureLayer) => {
-                // Ensure audio property from config is synced into geojson properties
+                // Đồng bộ mã ấp & đường dẫn audio từ config vào GeoJSON properties
                 const hConfig = config.hamlets.find(h => h.name === hamletName);
-                if (hConfig && hConfig.audio) {
-                  feature.properties.audio = hConfig.audio;
+                if (hConfig) {
+                  if (hConfig.ma) feature.properties.ma = String(hConfig.ma);
+                  if (hConfig.audio) {
+                    feature.properties.audio = normalizeAudioPath(hConfig.audio);
+                  } else if (hConfig.ma) {
+                    feature.properties.audio = normalizeAudioPath(`audio/${hConfig.ma}`);
+                  }
                 }
 
                 hamletFeaturesByName[hamletName] = feature;
@@ -1158,7 +1136,6 @@ document.addEventListener("DOMContentLoaded", () => {
                   scheduleZoomToHamlet(hamletName);
                 });
 
-                bindHamletTouchAudio(featureLayer, () => feature.properties);
               },
             });
             layer.addTo(hamletsLayerGroup);
@@ -1644,12 +1621,7 @@ document.addEventListener("DOMContentLoaded", () => {
     animateValue("stat-pop", 0, popVal, 1200, 0, " người");
     animateValue("stat-density", 0, hoVal, 1500, 0, " hộ");
 
-    const player = getHamletAudioPlayer();
-    if (player && !player.paused && !player.ended) {
-      setTtsButtonState("playing");
-    } else {
-      setTtsButtonState("ready");
-    }
+    setTtsButtonState("ready");
 
     // Show audio file name label next to the TTS button
     const audioNameEl = document.getElementById("tts-audio-name");
@@ -1678,7 +1650,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderMergerTags(mergerContainer, props);
     }
 
-    maybeAutoSpeakHamletAudio(props);
+    speakCommuneInfo(props);
     updateSidebarToggleButton();
   }
 
@@ -1980,17 +1952,21 @@ document.addEventListener("DOMContentLoaded", () => {
     window.requestAnimationFrame(step);
   }
 
-  // 8. Text-to-Speech (TTS) — nút loa điều khiển thủ công (touchstart cho mobile)
+  // 8. Text-to-Speech (TTS) — nút loa điều khiển thủ công (theo xa_dai_an)
   const globalTtsBtn = document.getElementById("tts-global-btn");
   if (globalTtsBtn) {
-    globalTtsBtn.addEventListener("touchstart", (e) => {
-      e.stopPropagation();
-      handleTtsButtonActivate(e);
-    }, { passive: true });
     globalTtsBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (Date.now() - recentTtsBtnTouchAt < 500) return;
-      handleTtsButtonActivate(e);
+      if (globalTtsBtn.classList.contains("disabled")) return;
+
+      if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+        setTtsButtonState("ready", globalTtsBtn);
+      } else if (currentProperties) {
+        speakCommuneInfo(currentProperties, globalTtsBtn);
+      }
     });
   }
 

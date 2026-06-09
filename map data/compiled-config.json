@@ -25,11 +25,11 @@
       "ma": "3005001",
       "file": "Ấp Bà Bảy.geojson",
       "center": [
-        9.794916367894556,
-        106.067161469747
+        9.79492,
+        106.06716
       ],
       "color": "#ff4d4d",
-      "audio": "audio/Ấp Bà Bảy",
+      "audio": "audio/Ap Ba Bay.mp3",
       "properties": {
         "ten": "Ấp Bà Bảy",
         "ma": "3005001",
@@ -74,7 +74,7 @@
         106.1275
       ],
       "color": "#ff9f0a",
-      "audio": "audio/Ấp Bắc SaMa",
+      "audio": "audio/Ap Bac SaMa.mp3",
       "properties": {
         "ten": "Ấp Bắc Sa Ma",
         "ma": "3005002",
@@ -84,7 +84,9 @@
         "so_ho": "1016",
         "sap_nhap_tu": [
           "Ấp Bắc Sa Ma"
-        ]
+        ],
+        "dien_tich_km2": "7.25",
+        "mat_do_km2": "578.68"
       },
       "subHamlets": []
     },
@@ -97,7 +99,7 @@
         106.15668
       ],
       "color": "#30d158",
-      "audio": "audio/Ấp Cây Gòn",
+      "audio": "audio/Ap Cay Gon.mp3",
       "properties": {
         "ten": "Ấp Cây Gòn",
         "ma": "3005003",
@@ -108,7 +110,9 @@
         "sap_nhap_tu": [
           "Ấp Cây Gòn",
           "Ấp Cả Chương"
-        ]
+        ],
+        "dien_tich_km2": "5.23",
+        "mat_do_km2": "522.27"
       },
       "subHamlets": [
         {
@@ -140,7 +144,7 @@
         106.12364
       ],
       "color": "#0a84ff",
-      "audio": "audio/Ấp Chợ",
+      "audio": "audio/Ap Cho.mp3",
       "properties": {
         "ten": "Ấp Chợ",
         "ma": "3005004",
@@ -150,7 +154,9 @@
         "so_ho": "1091",
         "sap_nhap_tu": [
           "Ấp Chợ"
-        ]
+        ],
+        "dien_tich_km2": "8.89",
+        "mat_do_km2": "535.29"
       },
       "subHamlets": []
     },
@@ -163,7 +169,7 @@
         106.09686
       ],
       "color": "#5e5ce6",
-      "audio": "audio/Ấp Đồng Điền",
+      "audio": "audio/Ap Dong Dien.mp3",
       "properties": {
         "ten": "Ấp Đồng Điền",
         "ma": "3005005",
@@ -174,7 +180,9 @@
         "sap_nhap_tu": [
           "Ấp Đồng Điền",
           "Ấp Xèo Cạn"
-        ]
+        ],
+        "dien_tich_km2": "3.13",
+        "mat_do_km2": "975.05"
       },
       "subHamlets": [
         {
@@ -206,7 +214,7 @@
         106.10913
       ],
       "color": "#bf5af2",
-      "audio": "audio/Ấp Đồng Khoen",
+      "audio": "audio/Ap Dong Khoen.mp3",
       "properties": {
         "ten": "Ấp Đồng Khoen",
         "ma": "3005006",
@@ -216,7 +224,9 @@
         "so_ho": "634",
         "sap_nhap_tu": [
           "Ấp Đồng Khoen"
-        ]
+        ],
+        "dien_tich_km2": "5.15",
+        "mat_do_km2": "527.32"
       },
       "subHamlets": []
     },
@@ -229,7 +239,7 @@
         106.08665
       ],
       "color": "#64d2ff",
-      "audio": "audio/Ấp 2",
+      "audio": "audio/Ap 2.mp3",
       "properties": {
         "ten": "Ấp II",
         "ma": "3005008",
@@ -239,7 +249,9 @@
         "so_ho": "564",
         "sap_nhap_tu": [
           "Ấp II"
-        ]
+        ],
+        "dien_tich_km2": "4.22",
+        "mat_do_km2": "527.15"
       },
       "subHamlets": []
     },
@@ -252,7 +264,7 @@
         106.07712
       ],
       "color": "#ffd60a",
-      "audio": "audio/Ấp 3",
+      "audio": "audio/Ap 3.mp3",
       "properties": {
         "ten": "Ấp III",
         "ma": "3005009",
@@ -262,7 +274,9 @@
         "so_ho": "440",
         "sap_nhap_tu": [
           "Ấp III"
-        ]
+        ],
+        "dien_tich_km2": "4.70",
+        "mat_do_km2": "376.57"
       },
       "subHamlets": []
     },
@@ -275,7 +289,7 @@
         106.10218
       ],
       "color": "#a78bfa",
-      "audio": "audio/Ấp Kinh Xáng",
+      "audio": "audio/Ap Kinh Xang.mp3",
       "properties": {
         "ten": "Ấp Kinh Xáng",
         "ma": "3005011",
@@ -285,7 +299,9 @@
         "so_ho": "795",
         "sap_nhap_tu": [
           "Ấp Kinh Xáng"
-        ]
+        ],
+        "dien_tich_km2": "8.35",
+        "mat_do_km2": "379.04"
       },
       "subHamlets": []
     },
@@ -298,7 +314,7 @@
         106.07557
       ],
       "color": "#34d399",
-      "audio": "audio/Ấp Mỹ Văn",
+      "audio": "audio/Ap My Van.mp3",
       "properties": {
         "ten": "Ấp Mỹ Văn",
         "ma": "3005012",
@@ -309,7 +325,9 @@
         "sap_nhap_tu": [
           "Ấp Mỹ Văn",
           "Ấp Vàm Đình"
-        ]
+        ],
+        "dien_tich_km2": "3.46",
+        "mat_do_km2": "1005.08"
       },
       "subHamlets": [
         {
@@ -337,11 +355,11 @@
       "ma": "3005013",
       "file": "Ấp Ô Phèn.geojson",
       "center": [
-        9.859359701943527,
-        106.13762767475991
+        9.85936,
+        106.13763
       ],
       "color": "#f43f5e",
-      "audio": "audio/Ấp Ô Phèn",
+      "audio": "audio/Ap O Phen.mp3",
       "properties": {
         "ten": "Ấp Ô Phèn",
         "ma": "3005013",
@@ -352,7 +370,9 @@
         "sap_nhap_tu": [
           "Ấp Ô Phèn",
           "Ấp Xóm Giữa"
-        ]
+        ],
+        "dien_tich_km2": "6.50",
+        "mat_do_km2": "466.81"
       },
       "subHamlets": [
         {
@@ -380,11 +400,11 @@
       "ma": "3005014",
       "file": "Ấp Rạch Đùi.geojson",
       "center": [
-        9.772671205465961,
-        106.09213725182202
+        9.77267,
+        106.09214
       ],
       "color": "#fa97d8",
-      "audio": "audio/Ấp Rạch Đùi",
+      "audio": "audio/Ap Rach Dui.mp3",
       "properties": {
         "ten": "Ấp Rạch Đùi",
         "ma": "3005014",
@@ -395,7 +415,9 @@
         "sap_nhap_tu": [
           "Ấp Rạch Đùi",
           "ấp Xèo Cạn"
-        ]
+        ],
+        "dien_tich_km2": "4.29",
+        "mat_do_km2": "712.07"
       },
       "subHamlets": [
         {
@@ -427,7 +449,7 @@
         106.06167
       ],
       "color": "#e28743",
-      "audio": "audio/Ấp Trà Điêu",
+      "audio": "audio/Ap Tra Dieu.mp3",
       "properties": {
         "ten": "Ấp Trà Điêu",
         "ma": "3005015",
@@ -437,7 +459,9 @@
         "so_ho": "464",
         "sap_nhap_tu": [
           "Ấp Trà Điêu"
-        ]
+        ],
+        "dien_tich_km2": "1.95",
+        "mat_do_km2": "980.47"
       },
       "subHamlets": []
     },
@@ -450,7 +474,7 @@
         106.09394
       ],
       "color": "#e28743",
-      "audio": "audio/Ấp 1",
+      "audio": "audio/Ap 1.mp3",
       "properties": {
         "ten": "Ấp I",
         "ma": "3005015",
@@ -460,7 +484,9 @@
         "so_ho": "422",
         "sap_nhap_tu": [
           "Ấp I"
-        ]
+        ],
+        "dien_tich_km2": "6.08",
+        "mat_do_km2": "289.80"
       },
       "subHamlets": []
     },
@@ -473,7 +499,7 @@
         106.09986
       ],
       "color": "#e14141",
-      "audio": "audio/Ấp 4",
+      "audio": "audio/Ap 4.mp3",
       "properties": {
         "ten": "Ấp IV",
         "ma": "3005015",
@@ -483,7 +509,9 @@
         "so_ho": "715",
         "sap_nhap_tu": [
           "Ấp IV"
-        ]
+        ],
+        "dien_tich_km2": "5.52",
+        "mat_do_km2": "544.63"
       },
       "subHamlets": []
     }
