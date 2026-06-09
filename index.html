@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản Đồ Tương Tác Xã Phong Thạnh | Vĩnh Long</title>
-  
+
   <!-- Meta SEO -->
-  <meta name="description" content="Bản đồ tương tác hiển thị thông tin ranh giới, diện tích, dân số, mật độ và ban lãnh đạo của xã Phong Thạnh, huyện Phong Thạnh, tỉnh Vĩnh Long trên nền bản đồ Google Maps có nhãn cực sắc nét.">
-  <meta name="keywords" content="Bản đồ Phong Thạnh, Xã Phong Thạnh, Huyện Phong Thạnh, Vĩnh Long, Bản đồ tương tác, Bản đồ vệ tinh Google">
+  <meta name="description"
+    content="Bản đồ tương tác hiển thị thông tin ranh giới, diện tích, dân số, mật độ và ban lãnh đạo của xã Phong Thạnh, tỉnh Vĩnh Long trên nền bản đồ Google Maps có nhãn cực sắc nét.">
+  <meta name="keywords"
+    content="Bản đồ Phong Thạnh, Xã Phong Thạnh, Tỉnh Vĩnh Long, Bản đồ tương tác, Bản đồ vệ tinh Google">
   <meta name="author" content="Antigravity GIS">
-  
+
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
   <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <!-- Custom Styling -->
   <link rel="stylesheet" href="css/style.css">
-  
+
   <!-- Leaflet JS (loaded in head for faster layout initialization) -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <!-- Three.js (for beautiful 3D rotating globe background) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
+
 <body>
 
   <!-- Welcome/Intro Overlay (Glassmorphism & Interactive) -->
   <div id="intro-overlay" class="intro-overlay">
     <!-- 3D Globe Background Container -->
     <div id="globe-canvas-container" class="globe-canvas-container"></div>
-    
+
     <div class="intro-card">
       <!-- High-tech HUD Scanline & Corners -->
       <div class="intro-scanline"></div>
@@ -40,13 +48,13 @@
         <div class="corner corner-bl"></div>
         <div class="corner corner-br"></div>
       </div>
-      
+
       <div class="intro-glow"></div>
-      
+
       <div class="intro-brand-logo">
         <img src="AULAC.png" alt="Công ty Âu Lạc Logo" class="intro-logo-img">
       </div>
-      
+
       <div class="intro-header">
         <div class="intro-brand-icon">
           <i class="fas fa-map-location-dot"></i>
@@ -60,7 +68,10 @@
       <div class="intro-content">
         <h1 class="intro-title">Chào Mừng Quý Đại Biểu</h1>
         <p class="intro-text">
-          Chào mừng quý vị đại biểu đến với Bản đồ số tương tác xã Phong Thạnh, tỉnh Vĩnh Long. Đây là sản phẩm công nghệ số do <strong style="color: var(--accent-emerald);">CÔNG TY ÂU LẠC</strong> thực hiện vào tháng 6 năm 2026. Hệ thống dữ liệu này sẽ được cập nhật liên tục nhằm nâng cao hiệu quả cho công tác quản lý hành chính tại địa phương. Xin trân trọng cảm ơn.
+          Chào mừng quý vị đại biểu đến với Bản đồ số tương tác xã Phong Thạnh, tỉnh Vĩnh Long. Đây là sản phẩm công
+          nghệ số do <strong style="color: var(--accent-emerald);">CÔNG TY ÂU LẠC</strong> thực hiện vào tháng 6 năm
+          2026. Hệ thống dữ liệu này sẽ được cập nhật liên tục nhằm nâng cao hiệu quả cho công tác quản lý hành chính
+          tại địa phương. Xin trân trọng cảm ơn.
         </p>
       </div>
 
@@ -69,7 +80,7 @@
           <span>Khám phá Bản đồ</span> <i class="fas fa-arrow-right"></i>
         </button>
       </div>
-      
+
       <div class="intro-footer">
         <p>&copy; 2026 Bản quyền thuộc về CÔNG TY ÂU LẠC & UBND Xã Phong Thạnh</p>
       </div>
@@ -108,7 +119,7 @@
         <i class="fas fa-shield-halved"></i> <span id="commune-badge-text">Đơn vị cấp Xã</span>
       </span>
     </div>
-    
+
     <div class="sidebar-content">
       <!-- Back to Commune Button -->
       <button id="back-to-commune" class="back-to-commune-btn" style="display: none;">
@@ -121,12 +132,14 @@
           <h1 id="commune-name" style="margin: 0;">Chọn một ấp</h1>
         </div>
         <!-- Merger info placed directly under the name -->
-        <div id="merger-sub-section" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px; align-items: stretch; padding-bottom: 12px; border-bottom: 1px solid rgba(15, 43, 92, 0.08);">
-          <span id="merger-title" class="info-label" style="font-weight: 700; color: var(--text-primary);"><i class="fas fa-compress-arrows-alt"></i> Khu vực giáp ranh / sáp nhập:</span>
+        <div id="merger-sub-section"
+          style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px; align-items: stretch; padding-bottom: 12px; border-bottom: 1px solid rgba(15, 43, 92, 0.08);">
+          <span id="merger-title" class="info-label" style="font-weight: 700; color: var(--text-primary);"><i
+              class="fas fa-compress-arrows-alt"></i> Khu vực giáp ranh / sáp nhập:</span>
           <div id="info-merger" class="merger-tags-container"></div>
         </div>
       </div>
-      
+
       <!-- Administrative Table Section -->
       <div class="info-section">
         <div class="info-table">
@@ -189,4 +202,5 @@
   <!-- Core Scripts (Controller logic) -->
   <script src="js/app.js"></script>
 </body>
+
 </html>
