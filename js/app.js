@@ -569,7 +569,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatHamletName(name) {
     if (!name) return "";
-    return String(name).toLocaleUpperCase("vi-VN");
+    const cleanName = String(name).trim().replace(/^(ấp\s+)/i, "");
+    return "ẤP " + cleanName.toLocaleUpperCase("vi-VN");
   }
 
   function normalizeHamletName(name) {
@@ -1204,27 +1205,6 @@ document.addEventListener("DOMContentLoaded", () => {
                   oldHamletCenters[compositeKey] = offsetLatlng;
                 }
               });
-
-              if (isVisible) {
-                const labelText = `${formatHamletName(name)} (ẤP CŨ)`;
-                const marker = L.marker(offsetLatlng, {
-                  icon: L.divIcon({
-                    className: "hamlet-map-label-icon old-hamlet-label-hidden",
-                    html: `<span class="hamlet-map-label old-hamlet-map-label">${labelText}</span>`,
-                  }),
-                  interactive: false,
-                  keyboard: false,
-                  zIndexOffset: 500
-                }).addTo(hamletLabelsLayerGroup);
-
-                // Lưu marker theo cha mẹ (mỗi ấp cũ có thể thuộc nhiều ấp mới khác nhau)
-                config.hamlets.forEach(h => {
-                  if (h.subHamlets && h.subHamlets.some(sh => sh.name === name)) {
-                    if (!oldHamletLabelsByParent[h.name]) oldHamletLabelsByParent[h.name] = [];
-                    oldHamletLabelsByParent[h.name].push(marker);
-                  }
-                });
-              }
             }
           })
           .catch((err) => console.error(`Lỗi khi tải ranh giới ấp cũ ${name}:`, err));

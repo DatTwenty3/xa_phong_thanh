@@ -14,10 +14,11 @@
     "ten": "Phong Thạnh",
     "loai": "Xã",
     "cap": "2",
-    "dien_tich_km2": "77.54",
+    "dien_tich_ha": "7732.9",
+    "dien_tich_km2": "77.33",
     "dan_so": "44338",
     "so_ho": "10683",
-    "mat_do_km2": "571.81"
+    "mat_do_km2": "573.36"
   },
   "hamlets": [
     {
